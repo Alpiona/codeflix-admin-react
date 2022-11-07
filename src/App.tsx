@@ -1,21 +1,37 @@
-import * as React from 'react';
 import { ThemeProvider } from '@mui/system';
-import { Box, createTheme } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import Header from './components/Header';
 import Layout from './components/Layout';
-
-const theme = createTheme({})
+import { appTheme } from './config/theme';
+import { Route, Routes } from 'react-router-dom';
+import { CategoryList } from './features/categories/ListCategory';
+import { CategoryEdit } from './features/categories/EditCategory';
+import { CategoryCreate } from './features/categories/CreateCategory';
 
 export default function App() {
   return(
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={appTheme}>
       <Box component="main" sx={{
         height: "100vh",
-        backgroundColor: "#000"
+        backgroundColor: (theme) => theme.palette.grey[900]
       }}>
+        
         <Header/>
         <Layout>
-          <h1>Ola Mundo</h1>
+          <h1>Welcome to React Router!</h1>
+          <Routes>
+            <Route path="/" element={<CategoryList />}></Route>
+            <Route path="/categories" element={<CategoryList />}></Route>
+            <Route path="/categories/create" element={<CategoryCreate />}></Route>
+            <Route path="/categories/edit/:id" element={<CategoryEdit />}></Route>
+
+            <Route path="*" element={
+              <Box sx={{color: "white"}}>
+                <Typography variant="h1">404</Typography>
+                <Typography variant="h2">Page not found!</Typography>
+              </Box>
+            }></Route>
+          </Routes>
         </Layout>
       </Box>
     </ThemeProvider>
