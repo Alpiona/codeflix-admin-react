@@ -2,11 +2,18 @@ import { Box, Button, IconButton, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 import { useAppSelector } from "../../app/hooks";
 import { selectCategories } from "./categorySlice";
-import { DataGrid, GridColDef, GridRenderCellParams, GridRowsProp } from "@mui/x-data-grid";
+import { DataGrid, GridColDef, GridRenderCellParams, GridRowsProp, GridToolbar } from "@mui/x-data-grid";
 import DeleteIcon from "@mui/icons-material/Delete"
 
 export const CategoryList = () => {
   const categories = useAppSelector(selectCategories)
+
+  const componentProps = {
+    toolbar: {
+      showQuickFilter: true,
+      quickFilterProps: {debounceMs: 500}
+    }
+  }
 
   const rows: GridRowsProp = categories.map((category) => ({
     id: category.id,
@@ -21,6 +28,7 @@ export const CategoryList = () => {
       field:"name", 
       headerName: "Name", 
       flex: 1,
+      renderCell: renderNameCell
     },
     {
       field:"createdAt",
@@ -41,6 +49,17 @@ export const CategoryList = () => {
       renderCell: renderActionCell
     },
   ]
+
+  function renderNameCell(rowData: GridRenderCellParams) { 
+    return (
+      <Link
+        style={{textDecoration: "none"}}
+        to={`/categories/edit/${rowData.id}`}
+      >
+        <Typography color="primary">{rowData.value}</Typography>
+      </Link>
+  )
+}
 
   function renderIsActiveCell(rowData: GridRenderCellParams) {
     return (
@@ -76,15 +95,18 @@ export const CategoryList = () => {
         </Button>
       </Box>
 
-      <div style={{ height: 300, width: "100%"}}>
+      <Box sx={{ display: "flex", height: 600}}>
         <DataGrid 
+          components={{Toolbar: GridToolbar}}
+          componentsProps= {componentProps}
+          disableColumnSelector={true}
+          disableColumnFilter={true}
+          disableDensitySelector={true}
+          disableSelectionOnClick={true}
+          rowsPerPageOptions={[2,20,50,100]}
           rows={rows} 
           columns={columns}
         />
-      </div>
-
-      {/* {categories.map((category) => (
-        <Typography key={category.id}>{category.name}</Typography>
-      ))} */}
+      </Box>
     </Box>
   )}
