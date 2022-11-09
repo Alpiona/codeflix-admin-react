@@ -1,4 +1,5 @@
 import { Box, Paper, Typography } from "@mui/material";
+import { useSnackbar } from "notistack";
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
@@ -11,10 +12,12 @@ export const CategoryEdit = () => {
   const category = useAppSelector(state => selectCategoryById(state,id))
   const [categoryState, setCategoryState] = useState<Category>(category)
   const dispatch = useAppDispatch();
+  const { enqueueSnackbar} = useSnackbar();
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     dispatch(updateCategory(categoryState));
+    enqueueSnackbar("Success updating category!", {variant:"success"})
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

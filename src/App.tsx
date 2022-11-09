@@ -7,10 +7,12 @@ import { Route, Routes } from 'react-router-dom';
 import { CategoryList } from './features/categories/ListCategory';
 import { CategoryEdit } from './features/categories/EditCategory';
 import { CategoryCreate } from './features/categories/CreateCategory';
+import { SnackbarProvider } from 'notistack';
 
 export default function App() {
   return(
     <ThemeProvider theme={appTheme}>
+      <SnackbarProvider autoHideDuration={2000} maxSnack={3} anchorOrigin={{vertical: "top", horizontal:"right"}}>
       <Box component="main" sx={{
         height: "100vh",
         backgroundColor: (theme) => theme.palette.grey[900]
@@ -34,6 +36,7 @@ export default function App() {
           </Routes>
         </Layout>
       </Box>
+      </SnackbarProvider>
     </ThemeProvider>
   )
 }
