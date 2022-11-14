@@ -1,12 +1,13 @@
 import { Box, Paper, Typography } from "@mui/material";
 import { useSnackbar } from "notistack";
-import { useState } from "react";
-import { useAppDispatch } from "../../app/hooks";
-import { Category, createCategory } from "./categorySlice";
+import { useEffect, useState } from "react";
+import { Category, useCreateCategoryMutation } from "./categorySlice";
 import { CategoryForm } from "./components/CategoryForm";
 
 
 export const CategoryCreate = () => {
+  const {enqueueSnackbar} = useSnackbar();
+  const [createCategory, status] = useCreateCategoryMutation();
   const [isDisabled, setIsDisabled] =  useState(false)
   const [categoryState, setCategoryState] = useState<Category>({
     id: "", 
@@ -17,12 +18,11 @@ export const CategoryCreate = () => {
     deleted_at: "",
     description: "", 
   })
-  const dispatch = useAppDispatch();
-  const {enqueueSnackbar} = useSnackbar();
+
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    dispatch(createCategory(categoryState));
+    await createCategory(categoryState);
     enqueueSnackbar("Success creating category!", {variant:"success"})
   }
 
@@ -35,6 +35,15 @@ export const CategoryCreate = () => {
     const {name, checked} = e.target
     setCategoryState({...categoryState, [name]:checked})
   }
+
+  useEffect(() => {
+    if(status.isSuccess){
+      setIsDisabled(true)
+      enqueueSnackbar("Category created successfully!", {variant: "success"})
+    } else if(status.error){
+      enqueueSnackbar("Category not created!", {variant: "error"})
+    }
+  }, [status, enqueueSnackbar])
 
   return (
     <Box>
